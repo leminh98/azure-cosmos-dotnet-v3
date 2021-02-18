@@ -330,6 +330,58 @@ namespace Microsoft.Azure.Cosmos.SDK.EmulatorTests
         }
 
         [TestMethod]
+        [Owner("tminle")]
+        public void ValidateEnableIndexUtilizationInfoGateway()
+        {
+            var client = TestCommon.CreateClient(true);
+            ValidateEnableIndexUtilizationInfo(client);
+        }
+
+        [TestMethod]
+        [Owner("tminle")]
+        public void ValidateEnableIndexUtilizationInfoRntbd()
+        {
+            var client = TestCommon.CreateClient(false, Protocol.Tcp);
+            ValidateEnableIndexUtilizationInfo(client);
+        }
+
+        [TestMethod]
+        public void ValidateEnableIndexUtilizationInfoHttps()
+        {
+            var client = TestCommon.CreateClient(false, Protocol.Https);
+            ValidateEnableIndexUtilizationInfo(client);
+        }
+
+        private void ValidateEnableIndexUtilizationInfo(DocumentClient client)
+        {
+            DocumentCollection collection = TestCommon.CreateOrGetDocumentCollection(client);
+            SqlQuerySpec sqlQuerySpec = new SqlQuerySpec("SELECT * FROM c");
+
+            // Negative case 
+            // Value not boolean
+            INameValueCollection headers = new DictionaryNameValueCollection();
+            headers.Add(HttpConstants.HttpHeaders.PopulateQueryMetricsIndexUtilization, "\"Invalid Value\"");
+
+            try
+            {
+                QueryRequest(client, collection.ResourceId, sqlQuerySpec, headers);
+                Assert.Fail("Should throw an exception");
+            }
+            catch (Exception ex)
+            {
+                var innerException = ex.InnerException as DocumentClientException;
+                Assert.IsTrue(innerException.StatusCode == HttpStatusCode.BadRequest, "invalid status code");
+            }
+
+
+            INameValueCollection headers = new DictionaryNameValueCollection();
+            headers.Add(HttpConstants.HttpHeaders.PopulateQueryMetricsIndexUtilization, "true");
+            var response = QueryRequest(client, collection.ResourceId, sqlQuerySpec, headers);
+            Assert.IsTrue(response.StatusCode == HttpStatusCode.OK, "Invalid status code");
+            Assert.IsNotNull(response.ResponseHeaders[WFConstants.BackendHeaders.QueryMetrics], "Expected metrics headers for query");
+        }
+
+        [TestMethod]
         public void ValidateIndexingDirectiveGateway()
         {
             var client = TestCommon.CreateClient(true);

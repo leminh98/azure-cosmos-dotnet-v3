@@ -41,6 +41,7 @@ namespace Microsoft.Azure.Cosmos
             this.MaxDegreeOfParallelism = options.MaxDegreeOfParallelism;
             this.PartitionKeyRangeId = options.PartitionKeyRangeId;
             this.PopulateQueryMetrics = options.PopulateQueryMetrics;
+            this.PopulateQueryMetricsIndexUtilization = options.PopulateQueryMetricsIndexUtilization;
             this.ResponseContinuationTokenLimitInKb = options.ResponseContinuationTokenLimitInKb;
             this.DisableRUPerMinuteUsage = options.DisableRUPerMinuteUsage;
 
@@ -303,6 +304,16 @@ namespace Microsoft.Azure.Cosmos
         /// </para>
         /// </remarks>
         public bool PopulateQueryMetrics { get; set; }
+
+        /// <summary>
+        /// Gets or sets the the <see cref="PopulateQueryMetricsIndexUtilization"/> request option for document query requests in the Azure Cosmos DB service.
+        /// </summary>
+        /// <remarks>
+        /// <para> 
+        /// PopulateQueryMetricsIndexUtilization is used to enable/disable getting metrics relating to query index utilization on document query requests.
+        /// </para>
+        /// </remarks>
+        internal bool PopulateQueryMetricsIndexUtilization { get; set; }
 
         /// <summary>
         ///  Gets or sets the <see cref="ResponseContinuationTokenLimitInKb"/> request option for document query requests in the Azure Cosmos DB service.

@@ -307,6 +307,11 @@ namespace Microsoft.Azure.Cosmos.Query
                 requestHeaders[HttpConstants.HttpHeaders.PopulateQueryMetrics] = bool.TrueString;
             }
 
+            if (this.feedOptions.PopulateQueryMetricsIndexUtilization)
+            {
+                requestHeaders[HttpConstants.HttpHeaders.PopulateQueryMetricsIndexUtilization] = bool.TrueString;
+            }
+
             if (this.feedOptions.ForceQueryScan)
             {
                 requestHeaders[HttpConstants.HttpHeaders.ForceQueryScan] = bool.TrueString;
